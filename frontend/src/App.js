@@ -1,9 +1,9 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import EditEventPage from "./pages/EditEventPage";
-import EventDetailPage from "./pages/EventDetailPage";
-import EventsPage from "./pages/EventsPage";
-import HomePage from "./pages/HomePage";
-import NewEventPage from "./pages/NewEventPage";
+import EditEventPage from "./pages/EditEvent";
+import EventDetailPage from "./pages/EventDetail";
+import EventsPage from "./pages/Events";
+import HomePage from "./pages/Home";
+import NewEventPage from "./pages/NewEvent";
 import RootLayout from "./pages/Root";
 import EventsRootLayout from "./pages/EventsRoot";
 
