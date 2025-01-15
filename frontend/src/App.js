@@ -1,16 +1,21 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import EditEventPage from "./pages/EditEvent";
-import EventDetailPage from "./pages/EventDetail";
+import ErrorPage from "./pages/Error";
+import EventDetailPage, {
+  action as deleteEventAction,
+  loader as eventDetailLoader,
+} from "./pages/EventDetail";
 import EventsPage, { loader as eventsLoader } from "./pages/Events";
 import EventsRootLayout from "./pages/EventsRoot";
 import HomePage from "./pages/Home";
-import NewEventPage from "./pages/NewEvent";
+import NewEventPage, { action as newEventAction } from "./pages/NewEvent";
 import RootLayout from "./pages/Root";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <RootLayout />,
+    errorElement: <ErrorPage />,
     children: [
       {
         index: true,
@@ -26,36 +31,31 @@ const router = createBrowserRouter([
             loader: eventsLoader,
           },
           {
-            path: ":id",
-            element: <EventDetailPage />,
-          },
-          {
             path: "new",
             element: <NewEventPage />,
+            action: newEventAction,
           },
           {
-            path: ":id/edit",
-            element: <EditEventPage />,
+            path: ":id",
+            id: "event-detail",
+            loader: eventDetailLoader,
+            children: [
+              {
+                index: true,
+                element: <EventDetailPage />,
+                action: deleteEventAction,
+              },
+              {
+                path: "edit",
+                element: <EditEventPage />,
+              },
+            ],
           },
         ],
       },
     ],
   },
 ]);
-
-// X 2. Add routing & route definitions for these five pages
-//    - / => HomePage
-//    - /events => EventsPage
-//    - /events/<some-id> => EventDetailPage
-//    - /events/new => NewEventPage
-//    - /events/<some-id>/edit => EditEventPage
-// X 3. Add a root layout that adds the <MainNavigation> component above all page components
-// X 4. Add properly working links to the MainNavigation
-// X 5. Ensure that the links in MainNavigation receive an "active" class when active
-// X 6. Output a list of dummy events to the EventsPage
-// X  Every list item should include a link to the respective EventDetailPage
-// X 7. Output the ID of the selected event on the EventDetailPage
-// X BONUS: Add another (nested) layout route that adds the <EventNavigation> component above all /events... page components
 
 function App() {
   return <RouterProvider router={router} />;

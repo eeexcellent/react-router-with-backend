@@ -1,50 +1,46 @@
-import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { redirect, useRouteLoaderData } from "react-router-dom";
+import EventItem from "../components/EventItem";
 
 export default function EventDetailPage() {
-  const params = useParams();
-  const [event, setEvent] = useState();
-  const [isLoading, setIsLoading] = useState(false);
+  const data = useRouteLoaderData("event-detail");
 
-  useEffect(() => {
-    async function fetchEvent() {
-      try {
-        setIsLoading(true);
-        const response = await fetch(
-          `http://localhost:8080/events/${params.id}`
-        );
+  return <EventItem event={data.event} />;
+}
 
-        if (!response.ok) {
-          throw new Error("Failed to fetch event");
-        }
+export async function loader({ params }) {
+  const id = params.id;
 
-        const data = await response.json();
-        setEvent(data.event);
-        setIsLoading(false);
-      } catch (error) {
-        throw new Error("Failed to fetch event");
+  const response = await fetch("http://localhost:8080/events/" + id);
+
+  if (!response.ok) {
+    throw new Response(
+      JSON.stringify({
+        message: "Could not fetch details for selected events.",
+      }),
+      {
+        status: 500,
       }
-    }
+    );
+  } else {
+    return response;
+  }
+}
 
-    fetchEvent();
-  }, [params.id]);
+export async function action({ request, params }) {
+  const eventId = params.id;
+  const response = await fetch("http://localhost:8080/events/" + eventId, {
+    method: request.method,
+  });
 
-  return (
-    <>
-      <h1>EventDetailPage</h1>
-      {isLoading && <p>Loading...</p>}
-      {!isLoading && event && (
-        <div>
-          <h2>{event.title}</h2>
-          <p>Event ID: {event.id}</p>
-          <p>{event.description}</p>
-          <p>{event.date}</p>
-          <img height="250" src={event.image} alt={event.title} />
-          <p>
-            <Link to="..">Back</Link>
-          </p>
-        </div>
-      )}
-    </>
-  );
+  if (!response.ok) {
+    throw new Response(
+      JSON.stringify({
+        message: "Could not delete event.",
+      }),
+      {
+        status: 500,
+      }
+    );
+  }
+  return redirect("/events");
 }
