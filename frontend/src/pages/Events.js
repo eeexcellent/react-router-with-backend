@@ -1,12 +1,13 @@
 import { Suspense } from "react";
 import { Await, useLoaderData } from "react-router-dom";
 import EventsList from "../components/EventsList";
+import LoadingCircle from "../components/LoadingCircle";
 
 export default function EventsPage() {
   const { events } = useLoaderData();
 
   return (
-    <Suspense fallback={<p style={{ textAlign: "center" }}>Loading...</p>}>
+    <Suspense fallback={<LoadingCircle />}>
       <Await resolve={events}>
         {(loadedEvents) => <EventsList events={loadedEvents} />}
       </Await>
